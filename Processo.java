@@ -54,6 +54,10 @@ public class Processo {
         ControladorDeProcessos.setConsumidor(estaEmUso ? consumidor : null);
     }
 
+private LinkedList<Processo> getListaDeEspera(){
+    return encontrarCoordenador().listaDeEspera;
+}
+
     private boolean isListaDeEsperaVazia(){
         return getListaDeEspera().isEmpty();
     }
@@ -90,17 +94,17 @@ public class Processo {
 
     private void adicionarNaListaDeEspera(Processo processoEmEspera){
         getListaDeEspera().add(processoEmEspera);
-        Syste,.out.println("Processo "+ this + " foi adicionado na lista de espera.");
+        System.out.println("Processo "+ this + " foi adicionado na lista de espera.");
         System.out.println("Lista de espera: " + getListaDeEspera());
     }
 
     private void utilizarRecurso(Processo processo) {
         Random random = new Random();
         int randomUsageTime = USO_PROCESSO_MAX + random.nextInt(USO_PROCESSO_MAX - USO_PROCESSO_MIN);
-        utilizaRecurso = new THread(new Runnable() {
+        utilizaRecurso = new Thread(new Runnable() {
             @Override
             public void run(){
-                System.out.println("Processo " + process + " está consumindo o recurso.");
+                System.out.println("Processo " + processo + " está consumindo o recurso.");
                 setRecursoEmUso(true, processo);
 
                 try{
@@ -113,13 +117,13 @@ public class Processo {
         utilizaRecurso.start();
     }
 
-    private void liberaRecurso() {
+    private void liberarRecurso() {
         setRecursoEmUso(false, this);
         if(!isListaDeEsperaVazia()){
-            Prcoesso processoEmEspera = getListaDeEspera().removeFirst());
+            Processo processoEmEspera = getListaDeEspera().removeFirst();
             processoEmEspera.acessarRecursoCompartilhado();
             System.out.println("Processo " + processoEmEspera + " foi removido da lista de espera.");
-            System.out.println("Lista de Espera: " + getListaDeEspira());
+            System.out.println("Lista de Espera: " + getListaDeEspera());
         }
     }
 
@@ -130,7 +134,7 @@ public class Processo {
             removerDaListaDeEspera(this);
             if(ControladorDeProcessos.isUsandoRecurso(this)){
                 interromperAcessoRecurso();
-                liberarRecurso;
+                liberarRecurso();
             }
         }
 

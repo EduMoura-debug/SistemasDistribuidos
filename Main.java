@@ -9,7 +9,7 @@ public class Main {
     private static final int CONSOME_RECURSO_MIN = 9000;
     private static final int CONSOME_RECURSO_MAX = 10000;
 
-    private static final objhect lock = new Object();
+    private static final Object lock = new Object();
 
     public static void main(String[] args){
 
@@ -72,7 +72,7 @@ public class Main {
         }).start();
     }
 
-    public static void inativarProcesso(ArrayList<Processo> processosAtivos){
+    public static void inativarCoordenador(ArrayList<Processo> processosAtivos){
         new Thread (new Runnable(){
             @Override
             public void run(){
@@ -86,7 +86,7 @@ public class Main {
                         }
                         if(coordenador != null){
                             coordenador.destruir();
-                            System.out.ṕrintln("Processo coordenado " + coordenador + " destruído");
+                            System.out.println("Processo coordenado " + coordenador + " destruído.");
                         }
                     }
                 }   
