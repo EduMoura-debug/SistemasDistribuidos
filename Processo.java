@@ -1,5 +1,7 @@
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Random;
+
 
 public class Processo {
 
@@ -54,9 +56,9 @@ public class Processo {
         ControladorDeProcessos.setConsumidor(estaEmUso ? consumidor : null);
     }
 
-private LinkedList<Processo> getListaDeEspera(){
-    return encontrarCoordenador().listaDeEspera;
-}
+    private LinkedList<Processo> getListaDeEspera(){
+        return encontrarCoordenador().listaDeEspera;
+    }
 
     private boolean isListaDeEsperaVazia(){
         return getListaDeEspera().isEmpty();
@@ -71,8 +73,10 @@ private LinkedList<Processo> getListaDeEspera(){
         Processo coordenador = ControladorDeProcessos.getCoordenador();
         
         if(coordenador == null) {
-            Eleicao eleicao = new Eleicao();
-            coordenador = eleicao.realizarEleicao(this.getPid());
+            ArrayList<Processo> processosAtivos =new ArrayList<Processo>();
+            processosAtivos = ControladorDeProcessos.getProcessosAtivos();
+            int pid = this.getPid();
+            coordenador = realizarEleicao(processosAtivos, pid);
         }
         return coordenador;
     }
@@ -82,7 +86,7 @@ private LinkedList<Processo> getListaDeEspera(){
             return;
         
         String resultado = conexao.realizarRequisicao("Processo " + this + " quer consumir o recurso.\n");
-        System.out.println("Resultado da  requisicao do processo " + this + ": " + resultado);
+        System.out.println("Resultado da requisicao do processo " + this + ": " + resultado);
 
         if(resultado.equals(Conexao.PERMITIR_ACESSO)){
             utilizarRecurso(this);
@@ -111,7 +115,7 @@ private LinkedList<Processo> getListaDeEspera(){
                     Thread.sleep(randomUsageTime);
                 }catch(InterruptedException e) { }
 
-                System.out.println("Processo " + processo + "Parou de consumir o recurso.");
+                System.out.println("Processo " + processo + " Parou de consumir o recurso.");
             }   
         });
         utilizaRecurso.start();
@@ -139,6 +143,38 @@ private LinkedList<Processo> getListaDeEspera(){
         }
 
         ControladorDeProcessos.removerProcesso(this);
+    }
+
+    private static Processo realizarEleicao(ArrayList<Processo> processosAtivos, int pid){
+        
+        Processo coordenador = new Processo(pid);
+        LinkedList<Integer> idProcessosConsultados = new LinkedList<>();
+        for (Processo p : ControladorDeProcessos.getProcessosAtivos()){
+            p.consultarProcesso(idProcessosConsultados);
+        }
+        
+        int idNovoCoordenador = pid;
+        for (Integer id : idProcessosConsultados){
+            if(id > idNovoCoordenador){
+                idNovoCoordenador = id;
+            }
+        }
+
+        for(Processo p : processosAtivos){
+            if(p.getPid() == idNovoCoordenador){
+                p.setEhCoordenador(true);
+                System.out.println("Eleicao concluida com sucesso. Novo coordenador: " + idNovoCoordenador);
+                coordenador = p;
+                break;
+            }else{
+                p.setEhCoordenador(false);
+            }
+        }
+        return coordenador;
+    }
+
+    private void consultarProcesso(LinkedList<Integer> processosConsultados){
+        processosConsultados.add(getPid());
     }
 
     @Override
