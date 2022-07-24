@@ -85,7 +85,7 @@ public class Processo {
         if(ControladorDeProcessos.isUsandoRecurso(this) || this.isCoordenador())
             return;
         
-        String resultado = conexao.realizarRequisicao("Processo " + this + " quer consumir o recurso.\n");
+        String resultado = conexao.realizarRequisicao("Processo " + this + " quer consumir o recurso. REQUISITAR\n");
         System.out.println("Resultado da requisicao do processo " + this + ": " + resultado);
 
         if(resultado.equals(Conexao.PERMITIR_ACESSO)){
@@ -115,7 +115,7 @@ public class Processo {
                     Thread.sleep(randomUsageTime);
                 }catch(InterruptedException e) { }
 
-                System.out.println("Processo " + processo + " Parou de consumir o recurso.");
+                System.out.println("Processo " + processo + " parou de consumir o recurso. LIBERAR");
             }   
         });
         utilizaRecurso.start();
@@ -163,7 +163,7 @@ public class Processo {
         for(Processo p : processosAtivos){
             if(p.getPid() == idNovoCoordenador){
                 p.setEhCoordenador(true);
-                System.out.println("Eleicao concluida com sucesso. Novo coordenador: " + idNovoCoordenador);
+                //System.out.println("Eleicao concluida com sucesso. Novo coordenador: " + idNovoCoordenador);
                 coordenador = p;
                 break;
             }else{

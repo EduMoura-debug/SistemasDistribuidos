@@ -11,8 +11,10 @@ import java.net.*;
 public class Conexao {
     
     private boolean conectado = true;
+    public static final String REQUISITAR_ACESSO = "REQUISITAR";
     public static final String PERMITIR_ACESSO = "PERMITIR";
     public static final String NEGAR_ACESSO = "NAO_PERMITIR";
+    public static final String LIBERAR = "LIBERAR";
     private static final int PORTA = 8000;
     private Socket sock;
     private ServerSocket listenSocket;
