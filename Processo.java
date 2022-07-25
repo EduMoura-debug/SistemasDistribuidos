@@ -86,9 +86,11 @@ public class Processo {
             return;
         
         String resultado = conexao.realizarRequisicao("Processo " + this + " quer consumir o recurso. REQUISITAR\n");
+        // 1|this|resto bytes
         System.out.println("Resultado da requisicao do processo " + this + ": " + resultado);
 
         if(resultado.equals(Conexao.PERMITIR_ACESSO)){
+            // 2|this|resto bytes
             utilizarRecurso(this);
         }else if(resultado.equals(Conexao.NEGAR_ACESSO)){
             adicionarNaListaDeEspera(this);
@@ -116,6 +118,7 @@ public class Processo {
                 }catch(InterruptedException e) { }
 
                 System.out.println("Processo " + processo + " parou de consumir o recurso. LIBERAR");
+                // 3|processo|resto bytes
             }   
         });
         utilizaRecurso.start();
