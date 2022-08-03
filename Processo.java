@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Random;
+import java.time.*;
 
 public class Processo {
 	
@@ -85,14 +86,15 @@ public class Processo {
 		
 		String resultado = conexao.realizarRequisicao("Processo " + this + " quer consumir o recurso. REQUISITAR\n");
 		
-        String s1 = "1|" + this + "\n";
+        LocalTime localtime = LocalTime.now();
+        String s1 = localtime + " - 1|" + this + "\n";
         Log.logResultado(s1);
 
 		System.out.println("Resultado da requisicao do processo " + this + ": " + resultado);
 		
 		if(resultado.equals(Conexao.PERMITIR_ACESSO)){
             
-            String s2 = "2|" + this + "\n";
+            String s2 = localtime + " - 2|" + this + "\n";
             Log.logResultado(s2);
             
             utilizarRecurso(this);
@@ -125,7 +127,9 @@ public class Processo {
 				} catch (InterruptedException e) { }
 				
 				System.out.println("Processo " + processo + " parou de consumir o recurso. LIBERAR");
-				String s3 = "3|" + processo + "\n";
+				
+				LocalTime localtime = LocalTime.now();
+				String s3 = localtime + " - 3|" + processo + "\n";
                 Log.logResultado(s3);
                 
                 processo.liberarRecurso();
